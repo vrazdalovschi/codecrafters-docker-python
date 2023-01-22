@@ -3,6 +3,7 @@ import subprocess
 import sys
 import tempfile
 import shutil
+import ctypes
 
 
 def main():
@@ -13,6 +14,11 @@ def main():
         shutil.copy(command, os.path.join(tmp_dir, command[command.rfind("/") + 1:]))
 
         command = command[command.rfind("/"):]
+
+        unshare = 272
+        clone_new_pid = 0x20000000
+        libc = ctypes.CDLL(None)
+        libc.syscall(unshare, clone_new_pid)
 
         os.chroot(tmp_dir)
 
